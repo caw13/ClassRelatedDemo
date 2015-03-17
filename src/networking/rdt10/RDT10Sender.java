@@ -14,54 +14,54 @@ import java.net.UnknownHostException;
  */
 public class RDT10Sender extends Thread {
 
-    /**
-     * Current state machine state of this sender
-     */
-    private RDT10SenderState currentState = new RDT10WaitForCallFromAbove(this);
+   /**
+    * Current state machine state of this sender
+    */
+   private RDT10SenderState currentState = new RDT10WaitForCallFromAbove(this);
 
-    private int receiverPortNumber = 0;
-    private DatagramSocket socket = null;
-    private InetAddress internetAddress = null;
-    final int PACKET_SIZE = 256;
+   private int receiverPortNumber = 0;
+   private DatagramSocket socket = null;
+   private InetAddress internetAddress = null;
+   final int PACKET_SIZE = 256;
 
-    public RDT10Sender() {
+   public RDT10Sender() {
 
-    }
+   }
 
-    void setCurrentState(RDT10SenderState newState) {
-        this.currentState = newState;
-    }
+   void setCurrentState(RDT10SenderState newState) {
+      this.currentState = newState;
+   }
 
-    DatagramSocket getSocket() {
-        return socket;
-    }
+   DatagramSocket getSocket() {
+      return socket;
+   }
 
-    int getReceiverPortNumber() {
-        return receiverPortNumber;
-    }
+   int getReceiverPortNumber() {
+      return receiverPortNumber;
+   }
 
-    InetAddress getInternetAddress() {
-        return internetAddress;
-    }
+   InetAddress getInternetAddress() {
+      return internetAddress;
+   }
 
-    public void startSender(byte[] targetAddress, int receiverPortNumber) throws SocketException, UnknownHostException {
-        socket = new DatagramSocket();
-        internetAddress = InetAddress.getByAddress(targetAddress);
-        this.receiverPortNumber = receiverPortNumber;
-    }
+   public void startSender(byte[] targetAddress, int receiverPortNumber) throws SocketException, UnknownHostException {
+      socket = new DatagramSocket();
+      internetAddress = InetAddress.getByAddress(targetAddress);
+      this.receiverPortNumber = receiverPortNumber;
+   }
 
-    public void shutdown() {
-        if (socket != null) {
-            socket.close();
-        }
-    }
+   public void shutdown() {
+      if (socket != null) {
+         socket.close();
+      }
+   }
 
-    /**
-     * Receive data and pass it to the current state
-     *
-     * @param data
-     */
-    public void rdtSend(byte[] data) throws SocketException, IOException {
-        currentState.rdtSend(data);
-    }
+   /**
+    * Receive data and pass it to the current state
+    *
+    * @param data
+    */
+   public void rdtSend(byte[] data) throws SocketException, IOException {
+      currentState.rdtSend(data);
+   }
 }

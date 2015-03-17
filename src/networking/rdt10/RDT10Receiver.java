@@ -11,64 +11,64 @@ import java.net.SocketException;
  */
 public class RDT10Receiver extends Thread {
 
-    /**
-     * Current state machine state of this receiver
-     */
-    private RDT10ReceiverState currentState = new RDT10WaitForCallFromBelow(this);
+   /**
+    * Current state machine state of this receiver
+    */
+   private RDT10ReceiverState currentState = new RDT10WaitForCallFromBelow(this);
 
-    private DatagramSocket socket = null;
+   private DatagramSocket socket = null;
 
-    private final int port;
+   private final int port;
 
-    final int PACKET_SIZE = 256;
+   final int PACKET_SIZE = 256;
 
-    public RDT10Receiver(String name, int port) {
-        super(name);
-        this.port = port;
-    }
+   public RDT10Receiver(String name, int port) {
+      super(name);
+      this.port = port;
+   }
 
-    public void startReceiver() throws SocketException {
-        socket = new DatagramSocket(port);
-    }
+   public void startReceiver() throws SocketException {
+      socket = new DatagramSocket(port);
+   }
 
-    public void shutdown() {
-        if (socket != null) {
-            socket.close();
-        }
-    }
+   public void shutdown() {
+      if (socket != null) {
+         socket.close();
+      }
+   }
 
-    public DatagramSocket getSocket() {
-        return socket;
-    }
+   public DatagramSocket getSocket() {
+      return socket;
+   }
 
-    /**
-     * Receive packet and act on it
-     *
-     * @param packet
-     */
-    public void rdtReceive(DatagramPacket packet) {
-        currentState.rdtReceive(packet);
-    }
+   /**
+    * Receive packet and act on it
+    *
+    * @param packet
+    */
+   public void rdtReceive(DatagramPacket packet) {
+      currentState.rdtReceive(packet);
+   }
 
-    @Override
-    public void run() {
-        try {
-            startReceiver();
-            while (true) {
-                byte[] buf = new byte[PACKET_SIZE];
+   @Override
+   public void run() {
+      try {
+         startReceiver();
+         while (true) {
+            byte[] buf = new byte[PACKET_SIZE];
 
-                // receive request
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                socket.receive(packet);
+            // receive request
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            socket.receive(packet);
 
-                // figure out response
-                rdtReceive(packet);
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-        }finally{
-           shutdown(); 
-        }
-        System.out.println("DONE");
-    }
+            // figure out response
+            rdtReceive(packet);
+         }
+      } catch (Exception e) {
+         System.err.println(e.getMessage());
+      } finally {
+         shutdown();
+      }
+      System.out.println("DONE");
+   }
 }
